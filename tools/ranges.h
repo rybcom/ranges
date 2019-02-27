@@ -85,6 +85,8 @@ namespace views
 		static default_container<T*>  init_from(Container<T*, Args...> const & c)
 		{
 			default_container<T*> result_list;
+			result_list.reserve(c.size());
+
 			for (auto * item : c)
 			{
 				result_list.push_back(item);
@@ -97,6 +99,8 @@ namespace views
 		static default_container<T*>  init_from(Container<T, Args...> const & c)
 		{
 			default_container<T*> result_list;
+			result_list.reserve(c.size());
+
 			for (T const & item : c)
 			{
 				result_list.push_back(const_cast<T*>(&item));
@@ -109,6 +113,8 @@ namespace views
 		static default_container<T*>  init_from(Container<std::unique_ptr<T>, Args...> const & c)
 		{
 			default_container<T*> result_list;
+			result_list.reserve(c.size());
+
 			for (auto & item : c)
 			{
 				result_list.push_back(item.get());
@@ -121,6 +127,8 @@ namespace views
 		static default_container<T*>  init_from(Container<std::reference_wrapper<T>, Args...> const & c)
 		{
 			default_container<T*> result_list;
+			result_list.reserve(c.size());
+
 			for (T & item : c)
 			{
 				result_list.push_back(&item);
@@ -141,6 +149,8 @@ namespace views
 
 		list(const default_container<T*>&& c)
 		{
+			this.reserve(c.size());
+
 			for (T * item : c)
 			{
 				this->push_back(*item);
@@ -159,6 +169,8 @@ namespace views
 
 		ref_list(const default_container<T*>&& c)
 		{
+			this.reserve(c.size());
+
 			for (T * item : c)
 			{
 				this->push_back(*item);
@@ -177,6 +189,7 @@ namespace views
 		list<T> operator()(default_container<T*> const &&  rng) const
 		{
 			list<T> result_list;
+			result_list.reserve(rng.size());
 
 			for (T const * item : rng)
 			{
@@ -194,6 +207,7 @@ namespace views
 		ref_list<T> operator()(default_container<T*> const &&  rng) const
 		{
 			ref_list<T> result_list;
+			result_list.reserve(rng.size());
 
 			for (T const * item : rng)
 			{
@@ -223,6 +237,8 @@ namespace views
 		default_container<indexed_pair<T>> operator()(default_container<T*> const &&  rng) const
 		{
 			default_container<indexed_pair<T>> result_list;
+			result_list.reserve(rng.size());
+
 			std::size_t index = _initIndex;
 			for (T * item : rng)
 			{
@@ -251,6 +267,8 @@ namespace views
 		default_container<T*> operator()(default_container<T*> const &&  rng) const
 		{
 			default_container<T*> result_list;
+			result_list.reserve(rng.size());
+
 			T value = _initValue;
 
 			for (T * item : rng)
@@ -398,6 +416,7 @@ namespace views
 		default_container<T*> operator()(default_container<T*> &&  rng) const
 		{
 			default_container<T*> result_list;
+			result_list.reserve(rng.size());
 
 			for (T const * item : rng)
 			{
@@ -594,6 +613,8 @@ namespace views
 		default_container<TypeOut> operator()(default_container<TypeIn*> &&  rng) const
 		{
 			default_container<TypeOut> result_list;
+			result_list.reserve(rng.size());
+
 			for (TypeIn const * item : rng)
 			{
 				result_list.push_back(_func(*item));
@@ -629,6 +650,7 @@ namespace views
 		default_container<TypeOut> operator()()
 		{
 			views::default_container<TypeOut> result_list;
+			result_list.reserve(_rng_A.size());
 
 			auto _First1 = _rng_A.cbegin();
 			auto _First2 = _rng_B.cbegin();
@@ -652,6 +674,7 @@ namespace views
 			default_container<TypeInA*> const &  rng_A) const
 		{
 			views::default_container<TypeOut> result_list;
+			result_list.reserve(_rng_A.size());
 
 			auto _First1 = rng_A.cbegin();
 			auto _First2 = _rng_B.cbegin();
@@ -793,6 +816,7 @@ namespace ranges
 		auto rng_B = views::default_container<TypeInB>::init_from(c2);
 
 		views::default_container<TypeOut> result_list;
+		result_list.reserve(rng_A.size());
 
 		auto _First1 = rng_A.cbegin();
 		auto _First2 = rng_B.cbegin();
@@ -824,6 +848,8 @@ namespace ranges
 	views::default_container<T> iota(std::size_t count, T const & init_value = T())
 	{
 		views::default_container<T> result_list;
+		result_list.reserve(count);
+
 		T value = init_value;
 
 		for (std::size_t i = 0; i < count; ++i)
