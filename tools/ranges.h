@@ -72,6 +72,23 @@ namespace views
 	class default_container : public std::vector<T>
 	{
 	public:
+		template<typename CastType>
+		default_container<CastType*> cast_to()
+		{
+			default_container<CastType*> result_list;
+			result_list.reserve(this->size());
+
+			for (size_t i = 0; i < this->size(); i++)
+			{
+				CastType* casted = dynamic_cast<CastType*>(this->at(i));
+				if (casted)
+				{
+					result_list.push_back(casted);
+				}
+			}
+
+			return result_list;
+		}
 
 		default_container(std::size_t count, T const & value)
 			: std::vector(count, value)
@@ -145,11 +162,19 @@ namespace views
 
 		list() = default;
 
-		list(const list& x) = default;
+		list(const list& c)
+		{
+			(*this).reserve(c.size());
+
+			for (T * item : c)
+			{
+				this->push_back(*item);
+			}
+		}
 
 		list(const default_container<T*>&& c)
 		{
-			this.reserve(c.size());
+			(*this).reserve(c.size());
 
 			for (T * item : c)
 			{
@@ -169,7 +194,7 @@ namespace views
 
 		ref_list(const default_container<T*>&& c)
 		{
-			this.reserve(c.size());
+			(*this).reserve(c.size());
 
 			for (T * item : c)
 			{
@@ -242,7 +267,7 @@ namespace views
 			std::size_t index = _initIndex;
 			for (T * item : rng)
 			{
-				result_list.push_back({item,index});
+				result_list.push_back({ item,index });
 				index++;
 			}
 
@@ -521,7 +546,16 @@ namespace views
 	{
 		max_element(std::function<bool(T const &, T const &)> f)
 		{
+
+#ifdef _HAS_CXX17
 			_predicate = std::not_fn(f);
+
+#else
+			_predicate = [f](T const & a, T const & b)
+			{
+				return !f(a, b);
+			};
+#endif
 		}
 
 		max_element()
@@ -627,7 +661,6 @@ namespace views
 		std::function<TypeOut(TypeIn const &)> _func;
 
 	};
-
 
 	template<class TypeInA, class TypeInB, class TypeOut>
 	struct zip
@@ -737,6 +770,13 @@ namespace views
 
 namespace ranges
 {
+	template<typename Container, typename Value>
+	void erase(Container&& c, Value val)
+	{
+		auto new_end = std::remove(c.begin(), c.end(), val);
+		c.erase(new_end, c.end());
+	}
+
 	template<typename Container, typename Pred>
 	void erase_if(Container&& c, Pred predicate)
 	{
