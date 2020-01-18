@@ -116,21 +116,7 @@ namespace views
 		}
 
 
-		template<typename Key, template <typename, typename...> class Container, typename...Args>
-		static default_container<T*>  init_from(Container<Key,T, Args...> const& c)
-		{
-
-			default_container<T*> result_list;
-			result_list.reserve(c.size());
-
-			for (auto &&[key,item] : c)
-			{
-				result_list.push_back(const_cast<T*>(&item));
-			}
-
-
-			return result_list;
-		}
+	
 
 		template< template <typename, typename...> class Container, typename...Args>
 		static default_container<T*>  init_from(Container<T, Args...> const& c)
@@ -142,6 +128,22 @@ namespace views
 			{
 				result_list.push_back(const_cast<T*>(&item));
 			}
+
+			return result_list;
+		}
+
+		template<typename Key, template <typename, typename...> class Container, typename...Args>
+		static default_container<T*>  init_from(Container<Key, T, Args...> const& c)
+		{
+
+			default_container<T*> result_list;
+			result_list.reserve(c.size());
+
+			for (auto&& [key, item] : c)
+			{
+				result_list.push_back(const_cast<T*>(&item));
+			}
+
 
 			return result_list;
 		}
@@ -332,7 +334,6 @@ namespace views
 	template<class T>
 	struct count
 	{
-		template<typename T>
 		std::size_t operator()(default_container<T*> const&& rng) const
 		{
 			return rng.size();
@@ -457,10 +458,7 @@ namespace views
 			predicate = f;
 		}
 
-		filter(bool(*f)(T const&)) 
-		{
-			predicate = f;
-		}
+
 
 
 		template<typename T>
@@ -479,6 +477,9 @@ namespace views
 			return result_list;
 		}
 	};
+
+	template<typename T>
+	filter(bool(*)(T const&))->filter<T>;
 
 	template<class T>
 	struct for_each

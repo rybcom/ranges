@@ -1,6 +1,9 @@
 #include "pch.h"
 
 
+bool is_male(FamilyMember const& member) { return member.getSex() == Sex::Male; }
+
+
 class ViewsOnFamily : public testing::Test
 {
 protected:
@@ -252,4 +255,30 @@ TEST_F(ViewsOnFamily, MapMap)
 
 
 	EXPECT_EQ(result->getName(),"Emil");
+}
+
+TEST_F(ViewsOnFamily, UnorderedMap)
+{
+	FamilyMember member;
+
+	member.setAge(12);
+	member.setName("Emil");
+	member.setPassportID(165342);
+	member.setSex(Sex::Female);
+	member.setCrimeScore(5);
+
+
+	FamilyMember member2;
+
+	member2.setAge(55);
+	member2.setName("Justin");
+	member2.setPassportID(512324);
+	member2.setSex(Sex::Male);
+	member2.setCrimeScore(66);
+
+	std::unordered_map<int, FamilyMember> list = { {165342,member},{512324,member2} };
+	auto result = list | views::filter(is_male) | views::get_first<FamilyMember>();
+
+
+	EXPECT_EQ(result->getName(), "Justin");
 }
