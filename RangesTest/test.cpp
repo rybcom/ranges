@@ -5,17 +5,17 @@ class ViewsOnFamily : public testing::Test
 {
 protected:
 
-	std::function<bool(FamilyMember const &)> is_crime_score_under_50 = [](FamilyMember const & member)
+	std::function<bool(FamilyMember const&)> is_crime_score_under_50 = [](FamilyMember const& member)
 	{
 		return  member.getCrimeScore() < 50;
 	};
 
-	std::function<bool(FamilyMember const &, FamilyMember const &)> compare_by_crime_score = [](FamilyMember const & mem_a, FamilyMember const & mem_b)
+	std::function<bool(FamilyMember const&, FamilyMember const&)> compare_by_crime_score = [](FamilyMember const& mem_a, FamilyMember const& mem_b)
 	{
 		return  mem_a.getCrimeScore() < mem_b.getCrimeScore();
 	};
 
-	std::function<std::string(FamilyMember const &)> transform_familymember_to_string = [](FamilyMember const & member)
+	std::function<std::string(FamilyMember const&)> transform_familymember_to_string = [](FamilyMember const& member)
 	{
 		return  member.getName();
 	};
@@ -72,10 +72,10 @@ protected:
 TEST_F(ViewsOnFamily, any_of)
 {
 	bool result = family.getFamilyMemberListRef().get() | views::any_of<FamilyMember>(
-		[](FamilyMember const & member)
-	{
-		return  member.getAge() > 50;
-	});
+		[](FamilyMember const& member)
+		{
+			return  member.getAge() > 50;
+		});
 
 	EXPECT_TRUE(result);
 }
@@ -83,10 +83,10 @@ TEST_F(ViewsOnFamily, any_of)
 TEST_F(ViewsOnFamily, all_of)
 {
 	bool result = family.getFamilyMemberListRef().get() | views::all_of<FamilyMember>(
-		[](FamilyMember const & member)
-	{
-		return  member.getSex() == Sex::Male;
-	});
+		[](FamilyMember const& member)
+		{
+			return  member.getSex() == Sex::Male;
+		});
 
 	EXPECT_TRUE(result);
 }
@@ -94,10 +94,10 @@ TEST_F(ViewsOnFamily, all_of)
 TEST_F(ViewsOnFamily, none_of)
 {
 	bool result = family.getFamilyMemberListRef().get() | views::none_of<FamilyMember>(
-		[](FamilyMember const & member)
-	{
-		return  member.getSex() == Sex::Female;
-	});
+		[](FamilyMember const& member)
+		{
+			return  member.getSex() == Sex::Female;
+		});
 
 	EXPECT_TRUE(result);
 }
@@ -105,8 +105,8 @@ TEST_F(ViewsOnFamily, none_of)
 TEST_F(ViewsOnFamily, filter)
 {
 	auto result = family.getFamilyMemberListRef().get()
-		| views::filter<FamilyMember>(is_crime_score_under_50)
-		| views::transform<FamilyMember, std::string>(transform_familymember_to_string);
+		| views::filter(is_crime_score_under_50)
+		| views::transform(transform_familymember_to_string);
 
 
 	EXPECT_EQ(result.size(), 2);
@@ -136,7 +136,7 @@ TEST_F(ViewsOnFamily, count_if)
 
 TEST_F(ViewsOnFamily, for_each)
 {
-	auto change_sex_to_female = [](FamilyMember & member)
+	auto change_sex_to_female = [](FamilyMember& member)
 	{
 		member.setSex(Sex::Female);
 	};
@@ -145,10 +145,10 @@ TEST_F(ViewsOnFamily, for_each)
 	family.getFamilyMemberListRef().get() | views::for_each<FamilyMember>(change_sex_to_female);
 
 	bool result = family.getFamilyMemberListRef().get() | views::all_of<FamilyMember>(
-		[](FamilyMember const & member)
-	{
-		return  member.getSex() == Sex::Female;
-	});
+		[](FamilyMember const& member)
+		{
+			return  member.getSex() == Sex::Female;
+		});
 
 	EXPECT_TRUE(result);
 }
@@ -164,7 +164,7 @@ TEST_F(ViewsOnFamily, min_element)
 TEST_F(ViewsOnFamily, max_element)
 {
 	auto result = family.getFamilyMemberListRef().get()
-		| views::max_element<FamilyMember>(compare_by_crime_score);
+		| views::max_element(compare_by_crime_score);
 
 	EXPECT_EQ(result->getName(), "Igor");
 }
@@ -172,10 +172,10 @@ TEST_F(ViewsOnFamily, max_element)
 TEST_F(ViewsOnFamily, find_if)
 {
 	auto result = family.getFamilyMemberListRef().get()
-		| views::find_if<FamilyMember>([](FamilyMember const & member)
-	{
-		return member.getCrimeScore() > 50 && member.getAge() > 70;
-	});
+		| views::find_if<FamilyMember>([](auto && member)
+			{
+				return member.getPassportID() ==  2175348 ;
+			});
 
 
 	EXPECT_EQ(result->getName(), "Igor");
@@ -211,7 +211,7 @@ TEST_F(ViewsOnFamily, zip)
 {
 
 	std::vector<int> test_index = { 10,20,30,40,50 };
-	auto zip_func = [](FamilyMember const & member, int index) -> std::string
+	auto zip_func = [](FamilyMember const& member, int index) -> std::string
 	{
 		return member.getName() + " " + std::to_string(index);
 	};
@@ -225,4 +225,31 @@ TEST_F(ViewsOnFamily, zip)
 	EXPECT_EQ(result[2], "Jozo 30");
 	EXPECT_EQ(result[3], "Tomas 40");
 	EXPECT_EQ(result[4], "Igor 50");
+}
+
+TEST_F(ViewsOnFamily, MapMap)
+{
+
+	FamilyMember member;
+
+	member.setAge(12);
+	member.setName("Emil");
+	member.setPassportID(165342);
+	member.setSex(Sex::Male);
+	member.setCrimeScore(5);
+
+
+	FamilyMember member2;
+
+	member2.setAge(55);
+	member2.setName("Jonatan");
+	member2.setPassportID(512324);
+	member2.setSex(Sex::Male);
+	member2.setCrimeScore(66);
+
+	std::map<int, FamilyMember> list = { {165342,member},{512324,member2} };
+	auto result = list | views::filter(is_crime_score_under_50) | views::get_first<FamilyMember>();
+
+
+	EXPECT_EQ(result->getName(),"Emil");
 }

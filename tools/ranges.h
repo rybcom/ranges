@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+#include <functional>
 
 
 #pragma region macros
@@ -90,7 +93,7 @@ namespace views
 			return result_list;
 		}
 
-		default_container(std::size_t count, T const & value)
+		default_container(std::size_t count, T const& value)
 			: std::vector(count, value)
 		{}
 
@@ -99,12 +102,12 @@ namespace views
 
 
 		template< template <typename, typename...> class Container, typename...Args>
-		static default_container<T*>  init_from(Container<T*, Args...> const & c)
+		static default_container<T*>  init_from(Container<T*, Args...> const& c)
 		{
 			default_container<T*> result_list;
 			result_list.reserve(c.size());
 
-			for (auto * item : c)
+			for (auto* item : c)
 			{
 				result_list.push_back(item);
 			}
@@ -112,13 +115,30 @@ namespace views
 			return result_list;
 		}
 
+
+		template<typename Key, template <typename, typename...> class Container, typename...Args>
+		static default_container<T*>  init_from(Container<Key,T, Args...> const& c)
+		{
+
+			default_container<T*> result_list;
+			result_list.reserve(c.size());
+
+			for (auto &&[key,item] : c)
+			{
+				result_list.push_back(const_cast<T*>(&item));
+			}
+
+
+			return result_list;
+		}
+
 		template< template <typename, typename...> class Container, typename...Args>
-		static default_container<T*>  init_from(Container<T, Args...> const & c)
+		static default_container<T*>  init_from(Container<T, Args...> const& c)
 		{
 			default_container<T*> result_list;
 			result_list.reserve(c.size());
 
-			for (T const & item : c)
+			for (T const& item : c)
 			{
 				result_list.push_back(const_cast<T*>(&item));
 			}
@@ -127,12 +147,12 @@ namespace views
 		}
 
 		template< template <typename, typename...> class Container, typename...Args>
-		static default_container<T*>  init_from(Container<std::unique_ptr<T>, Args...> const & c)
+		static default_container<T*>  init_from(Container<std::unique_ptr<T>, Args...> const& c)
 		{
 			default_container<T*> result_list;
 			result_list.reserve(c.size());
 
-			for (auto & item : c)
+			for (auto& item : c)
 			{
 				result_list.push_back(item.get());
 			}
@@ -141,12 +161,12 @@ namespace views
 		}
 
 		template< template <typename, typename...> class Container, typename...Args>
-		static default_container<T*>  init_from(Container<std::reference_wrapper<T>, Args...> const & c)
+		static default_container<T*>  init_from(Container<std::reference_wrapper<T>, Args...> const& c)
 		{
 			default_container<T*> result_list;
 			result_list.reserve(c.size());
 
-			for (T & item : c)
+			for (T& item : c)
 			{
 				result_list.push_back(&item);
 			}
@@ -166,7 +186,7 @@ namespace views
 		{
 			(*this).reserve(c.size());
 
-			for (T * item : c)
+			for (T* item : c)
 			{
 				this->push_back(*item);
 			}
@@ -176,7 +196,7 @@ namespace views
 		{
 			(*this).reserve(c.size());
 
-			for (T * item : c)
+			for (T* item : c)
 			{
 				this->push_back(*item);
 			}
@@ -196,7 +216,7 @@ namespace views
 		{
 			(*this).reserve(c.size());
 
-			for (T * item : c)
+			for (T* item : c)
 			{
 				this->push_back(*item);
 			}
@@ -211,12 +231,12 @@ namespace views
 	struct make_view
 	{
 		template<typename T>
-		list<T> operator()(default_container<T*> const &&  rng) const
+		list<T> operator()(default_container<T*> const&& rng) const
 		{
 			list<T> result_list;
 			result_list.reserve(rng.size());
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				result_list.push_back(*item);
 			}
@@ -229,12 +249,12 @@ namespace views
 	struct make_view_ref
 	{
 		template<typename T>
-		ref_list<T> operator()(default_container<T*> const &&  rng) const
+		ref_list<T> operator()(default_container<T*> const&& rng) const
 		{
 			ref_list<T> result_list;
 			result_list.reserve(rng.size());
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				result_list.push_back(*item);
 			}
@@ -246,7 +266,7 @@ namespace views
 	template<class T>
 	struct  indexed_pair
 	{
-		T * value;
+		T* value;
 		std::size_t index;
 	};
 
@@ -259,13 +279,13 @@ namespace views
 		{
 		}
 
-		default_container<indexed_pair<T>> operator()(default_container<T*> const &&  rng) const
+		default_container<indexed_pair<T>> operator()(default_container<T*> const&& rng) const
 		{
 			default_container<indexed_pair<T>> result_list;
 			result_list.reserve(rng.size());
 
 			std::size_t index = _initIndex;
-			for (T * item : rng)
+			for (T* item : rng)
 			{
 				result_list.push_back({ item,index });
 				index++;
@@ -283,20 +303,20 @@ namespace views
 	template<class T>
 	struct iota
 	{
-		iota(T const & init_value)
+		iota(T const& init_value)
 			:
 			_initValue(init_value)
 		{
 		}
 
-		default_container<T*> operator()(default_container<T*> const &&  rng) const
+		default_container<T*> operator()(default_container<T*> const&& rng) const
 		{
 			default_container<T*> result_list;
 			result_list.reserve(rng.size());
 
 			T value = _initValue;
 
-			for (T * item : rng)
+			for (T* item : rng)
 			{
 				result_list.push_back(value++);
 			}
@@ -313,7 +333,7 @@ namespace views
 	struct count
 	{
 		template<typename T>
-		std::size_t operator()(default_container<T*> const &&  rng) const
+		std::size_t operator()(default_container<T*> const&& rng) const
 		{
 			return rng.size();
 		}
@@ -323,16 +343,16 @@ namespace views
 	struct count_if
 	{
 
-		count_if(std::function<bool(T &)> f)
+		count_if(std::function<bool(T&)> f)
 		{
 			_predicate = f;
 		}
 
-		std::size_t operator()(default_container<T*> const &&  rng) const
+		std::size_t operator()(default_container<T*> const&& rng) const
 		{
 			std::size_t count = 0;
 
-			for (T * item : rng)
+			for (T* item : rng)
 			{
 				if (_predicate(*item))
 				{
@@ -343,25 +363,25 @@ namespace views
 		}
 
 	private:
-		std::function<bool(T &)> _predicate;
+		std::function<bool(T&)> _predicate;
 
 	};
 
 	template<class T>
 	struct none_of
 	{
-		std::function<bool(T const &)> predicate;
+		std::function<bool(T const&)> predicate;
 
-		none_of(std::function<bool(T const &)> f)
+		none_of(std::function<bool(T const&)> f)
 		{
 			predicate = f;
 		}
 
 		template<typename T>
-		bool operator()(default_container<T*> &&  rng) const
+		bool operator()(default_container<T*>&& rng) const
 		{
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				if (predicate(*item))
 				{
@@ -377,18 +397,18 @@ namespace views
 	template<class T>
 	struct all_of
 	{
-		std::function<bool(T const &)> predicate;
+		std::function<bool(T const&)> predicate;
 
-		all_of(std::function<bool(T const &)> f)
+		all_of(std::function<bool(T const&)> f)
 		{
 			predicate = f;
 		}
 
 		template<typename T>
-		bool operator()(default_container<T*> &&  rng) const
+		bool operator()(default_container<T*>&& rng) const
 		{
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				if (predicate(*item) == false)
 				{
@@ -404,18 +424,18 @@ namespace views
 	template<class T>
 	struct any_of
 	{
-		std::function<bool(T const &)> predicate;
+		std::function<bool(T const&)> predicate;
 
-		any_of(std::function<bool(T const &)> f)
+		any_of(std::function<bool(T const&)> f)
 		{
 			predicate = f;
 		}
 
 		template<typename T>
-		bool operator()(default_container<T*> &&  rng) const
+		bool operator()(default_container<T*>&& rng) const
 		{
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				if (predicate(*item))
 				{
@@ -430,20 +450,26 @@ namespace views
 	template<class T>
 	struct filter
 	{
-		std::function<bool(T const &)> predicate;
+		std::function<bool(T const&)> predicate;
 
-		filter(std::function<bool(T const &)> f)
+		filter(std::function<bool(T const&)> f)
 		{
 			predicate = f;
 		}
 
+		filter(bool(*f)(T const&)) 
+		{
+			predicate = f;
+		}
+
+
 		template<typename T>
-		default_container<T*> operator()(default_container<T*> &&  rng) const
+		default_container<T*> operator()(default_container<T*>&& rng) const
 		{
 			default_container<T*> result_list;
 			result_list.reserve(rng.size());
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				if (predicate(*item))
 				{
@@ -457,17 +483,17 @@ namespace views
 	template<class T>
 	struct for_each
 	{
-		std::function<void(T &)> func;
+		std::function<void(T&)> func;
 
-		for_each(std::function<void(T &)> f)
+		for_each(std::function<void(T&)> f)
 		{
 			func = f;
 		}
 
 		template<typename T>
-		default_container<T*> operator()(default_container<T*> const &&  rng) const
+		default_container<T*> operator()(default_container<T*> const&& rng) const
 		{
-			for (T * item : rng)
+			for (T* item : rng)
 			{
 				func(*item);
 			}
@@ -478,10 +504,9 @@ namespace views
 	template<class T>
 	struct get_first
 	{
-		template<typename T>
-		T* operator()(default_container<T*> const &&  rng) const
+		T* operator()(default_container<T*> const&& rng) const
 		{
-			for (T * item : rng)
+			for (T* item : rng)
 			{
 				return item;
 			}
@@ -493,16 +518,16 @@ namespace views
 	struct find_if
 	{
 
-		find_if(std::function<bool(T const &)> f)
+		find_if(std::function<bool(T const&)> f)
 		{
 			_predicate = f;
 		}
 
 		template<typename T>
-		T* operator()(default_container<T*> const &&  rng) const
+		T* operator()(default_container<T*> const&& rng) const
 		{
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				if (_predicate(*item))
 				{
@@ -513,21 +538,26 @@ namespace views
 		}
 
 	private:
-		std::function<bool(T const &)> _predicate;
+		std::function<bool(T const&)> _predicate;
 
 	};
+
+
+	template<class T>
+	find_if(bool(*)(T const&))->find_if<T>;
+
 
 	template<class T>
 	struct find
 	{
 
-		find(T const & v) : _value(v) {}
+		find(T const& v) : _value(v) {}
 
 		template<typename T>
-		T* operator()(default_container<T*> const &&  rng) const
+		T* operator()(default_container<T*> const&& rng) const
 		{
 
-			for (T const * item : rng)
+			for (T const* item : rng)
 			{
 				if (*item == _value)
 				{
@@ -538,20 +568,21 @@ namespace views
 		}
 
 	private:
-		T const & _value;
+		T const& _value;
 	};
 
 	template<class T>
 	struct max_element
 	{
-		max_element(std::function<bool(T const &, T const &)> f)
+		max_element(std::function<bool(T const&, T const&)> f)
 		{
 
-#ifdef _HAS_CXX17
+#ifdef false //_HAS_CXX17
+
 			_predicate = std::not_fn(f);
 
 #else
-			_predicate = [f](T const & a, T const & b)
+			_predicate = [f](T const& a, T const& b)
 			{
 				return !f(a, b);
 			};
@@ -563,7 +594,7 @@ namespace views
 			_predicate = std::greater<>();
 		}
 
-		T* operator()(default_container<T*> const &&  rng) const
+		T* operator()(default_container<T*> const&& rng) const
 		{
 			auto _First = rng.cbegin();
 			auto _Found = _First;
@@ -587,7 +618,7 @@ namespace views
 
 	private:
 
-		std::function<bool(T const &, T const &)> _predicate;
+		std::function<bool(T const&, T const&)> _predicate;
 
 	};
 
@@ -595,7 +626,7 @@ namespace views
 	struct min_element
 	{
 
-		min_element(std::function<bool(T const &, T const &)> f)
+		min_element(std::function<bool(T const&, T const&)> f)
 		{
 			_predicate = f;
 		}
@@ -605,7 +636,7 @@ namespace views
 			_predicate = std::less<>();
 		}
 
-		T* operator()(default_container<T*> const &&  rng) const
+		T* operator()(default_container<T*> const&& rng) const
 		{
 			auto _First = rng.cbegin();
 			auto _Found = _First;
@@ -630,7 +661,7 @@ namespace views
 
 	private:
 
-		std::function<bool(T const &, T const &)> _predicate;
+		std::function<bool(T const&, T const&)> _predicate;
 
 	};
 
@@ -639,17 +670,17 @@ namespace views
 	struct transform
 	{
 
-		transform(std::function<TypeOut(TypeIn const &)> f)
+		transform(std::function<TypeOut(TypeIn const&)> f)
 		{
 			_func = f;
 		}
 
-		default_container<TypeOut> operator()(default_container<TypeIn*> &&  rng) const
+		default_container<TypeOut> operator()(default_container<TypeIn*>&& rng) const
 		{
 			default_container<TypeOut> result_list;
 			result_list.reserve(rng.size());
 
-			for (TypeIn const * item : rng)
+			for (TypeIn const* item : rng)
 			{
 				result_list.push_back(_func(*item));
 			}
@@ -658,7 +689,7 @@ namespace views
 
 	private:
 
-		std::function<TypeOut(TypeIn const &)> _func;
+		std::function<TypeOut(TypeIn const&)> _func;
 
 	};
 
@@ -666,14 +697,14 @@ namespace views
 	struct zip
 	{
 		template <typename ContainerB>
-		zip(ContainerB const & cb, std::function<TypeOut(TypeInA const &, TypeInB const &)> f)
+		zip(ContainerB const& cb, std::function<TypeOut(TypeInA const&, TypeInB const&)> f)
 			: _func{ f }
 		{
 			_rng_B = views::default_container<TypeInB>::init_from(cb);
 		}
 
 		template <typename ContainerA, typename ContainerB>
-		zip(ContainerA const & ca, ContainerB const & cb, std::function<TypeOut(TypeInA const &, TypeInB const &)> f)
+		zip(ContainerA const& ca, ContainerB const& cb, std::function<TypeOut(TypeInA const&, TypeInB const&)> f)
 			: _func{ f }
 		{
 			_rng_A = views::default_container<TypeInA>::init_from(ca);
@@ -694,8 +725,8 @@ namespace views
 
 			for (int i = 0; i < distance; ++_First1, ++_First2, ++i)
 			{
-				TypeInA const & itemA = **_First1;
-				TypeInB const & itemB = **_First2;
+				TypeInA const& itemA = **_First1;
+				TypeInB const& itemB = **_First2;
 				result_list.push_back(_func(itemA, itemB));
 			}
 
@@ -704,7 +735,7 @@ namespace views
 		}
 
 		default_container<TypeOut> operator()(
-			default_container<TypeInA*> const &  rng_A) const
+			default_container<TypeInA*> const& rng_A) const
 		{
 			views::default_container<TypeOut> result_list;
 			result_list.reserve(_rng_A.size());
@@ -718,8 +749,8 @@ namespace views
 
 			for (int i = 0; i < distance; ++_First1, ++_First2, ++i)
 			{
-				TypeInA const & itemA = **_First1;
-				TypeInB const & itemB = **_First2;
+				TypeInA const& itemA = **_First1;
+				TypeInB const& itemB = **_First2;
 				result_list.push_back(_func(itemA, itemB));
 			}
 
@@ -730,7 +761,7 @@ namespace views
 
 	private:
 
-		std::function<TypeOut(TypeInA const &, TypeInB const &)> _func;
+		std::function<TypeOut(TypeInA const&, TypeInB const&)> _func;
 		default_container<TypeInA*> _rng_A;
 		default_container<TypeInB*> _rng_B;
 	};
@@ -771,23 +802,33 @@ namespace views
 namespace ranges
 {
 	template<typename Container, typename Value>
-	void erase(Container&& c, Value val)
+	size_t erase(Container&& c, Value val)
 	{
 		auto new_end = std::remove(c.begin(), c.end(), val);
+
+		size_t count = std::distance(new_end, c.end());
+
 		c.erase(new_end, c.end());
+
+		return count;
 	}
 
 	template<typename Container, typename Pred>
-	void erase_if(Container&& c, Pred predicate)
+	size_t erase_if(Container&& c, Pred predicate)
 	{
 		auto new_end = std::remove_if(c.begin(), c.end(), predicate);
+
+		size_t count = std::distance(new_end, c.end());
+
 		c.erase(new_end, c.end());
+
+		return count;
 	}
 
 	template<typename T, typename Pred, typename Container>
-	T* find_if(Container const & rng, Pred predicate)
+	T* find_if(Container const& rng, Pred predicate)
 	{
-		for (T const * item : views::default_container<T>::init_from(rng))
+		for (T const* item : views::default_container<T>::init_from(rng))
 		{
 			if (predicate(*item))
 			{
@@ -798,9 +839,9 @@ namespace ranges
 	}
 
 	template<typename T, typename Container>
-	T* find(Container const & rng, T const & value)
+	T* find(Container const& rng, T const& value)
 	{
-		for (T const * item : views::default_container<T>::init_from(rng))
+		for (T const* item : views::default_container<T>::init_from(rng))
 		{
 			if (*item == value)
 			{
@@ -811,9 +852,9 @@ namespace ranges
 	}
 
 	template<typename T, typename Pred, typename Container>
-	bool any_of(Container const & rng, Pred predicate)
+	bool any_of(Container const& rng, Pred predicate)
 	{
-		for (T const * item : views::default_container<T>::init_from(rng))
+		for (T const* item : views::default_container<T>::init_from(rng))
 		{
 			if (predicate(*item))
 			{
@@ -824,9 +865,9 @@ namespace ranges
 	}
 
 	template<typename T, typename Pred, typename Container>
-	bool all_of(Container const & rng, Pred predicate)
+	bool all_of(Container const& rng, Pred predicate)
 	{
-		for (T const * item : views::default_container<T>::init_from(rng))
+		for (T const* item : views::default_container<T>::init_from(rng))
 		{
 			if (predicate(*item) == false)
 			{
@@ -837,9 +878,9 @@ namespace ranges
 	}
 
 	template<typename T, typename Pred, typename Container>
-	bool none_of(Container const & rng, Pred predicate)
+	bool none_of(Container const& rng, Pred predicate)
 	{
-		for (T const * item : views::default_container<T>::init_from(rng))
+		for (T const* item : views::default_container<T>::init_from(rng))
 		{
 			if (predicate(*item))
 			{
@@ -850,7 +891,7 @@ namespace ranges
 	}
 
 	template<typename TypeInA, typename TypeInB, typename TypeOut, typename Func, typename ContainerA, typename ContainerB>
-	views::default_container<TypeOut> zip(ContainerA  const &  c1, ContainerB const & c2, Func func)
+	views::default_container<TypeOut> zip(ContainerA  const& c1, ContainerB const& c2, Func func)
 	{
 		auto rng_A = views::default_container<TypeInA>::init_from(c1);
 		auto rng_B = views::default_container<TypeInB>::init_from(c2);
@@ -867,8 +908,8 @@ namespace ranges
 
 		for (int i = 0; i < distance; ++_First1, ++_First2, ++i)
 		{
-			TypeInA const & itemA = **_First1;
-			TypeInB const & itemB = **_First2;
+			TypeInA const& itemA = **_First1;
+			TypeInB const& itemB = **_First2;
 			result_list.push_back(func(itemA, itemB));
 		}
 
@@ -877,7 +918,7 @@ namespace ranges
 	}
 
 	template<typename T>
-	views::default_container<T> generate(std::size_t count, T const & init_value = T())
+	views::default_container<T> generate(std::size_t count, T const& init_value = T())
 	{
 		views::default_container<T> result_list{ count, init_value };
 
@@ -885,7 +926,7 @@ namespace ranges
 	}
 
 	template<typename T>
-	views::default_container<T> iota(std::size_t count, T const & init_value = T())
+	views::default_container<T> iota(std::size_t count, T const& init_value = T())
 	{
 		views::default_container<T> result_list;
 		result_list.reserve(count);
@@ -901,12 +942,12 @@ namespace ranges
 	}
 
 	template<typename ResultValueType, typename T, typename Container>
-	ResultValueType accumulate(Container const & rng, ResultValueType initValue = ResultValueType{},
-		std::function<ResultValueType(ResultValueType const &, T const &)>&& op = std::plus<>{})
+	ResultValueType accumulate(Container const& rng, ResultValueType initValue = ResultValueType{},
+		std::function<ResultValueType(ResultValueType const&, T const&)>&& op = std::plus<>{})
 	{
 		ResultValueType result = initValue;
 
-		for (T const * item : views::default_container<T>::init_from(rng))
+		for (T const* item : views::default_container<T>::init_from(rng))
 		{
 			result = op(result, *item);
 		}
@@ -914,4 +955,5 @@ namespace ranges
 		return result;
 	}
 }
+
 
