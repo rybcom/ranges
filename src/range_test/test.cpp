@@ -172,8 +172,8 @@ TEST_CASE("range testing on family class ")
 	{
 		FamilyMember memberToFind;
 		memberToFind.setPassportID(1125342);
-		auto result = family.getFamilyMemberList()
-			| views::find(memberToFind);
+
+		auto result = family.getFamilyMemberList() | views::find(memberToFind);
 
 		REQUIRE(result->getName() == "Jozo");
 	}
@@ -217,6 +217,54 @@ TEST_CASE("range testing on family class ")
 
 }
 
+TEST_CASE("ranges iota testing")
+{
+	auto result = ranges::iota<int>(20, 2);
+
+	REQUIRE(result[0] == 2);
+	REQUIRE(result[10] == 12);
+	REQUIRE(result[19] == 21);
+	REQUIRE(result.size() == 20);
+
+	SECTION("Custom type")
+	{
+		struct PointXY
+		{
+			double x{};
+			double y{};
+
+			int index = 0;
+
+			PointXY operator++(int)
+			{
+				PointXY result(*this);  
+				++(this->index);              
+				return result;
+
+				return PointXY{ x,y,++index };
+			}
+		};
+
+		PointXY initValue{ 6,7,1 };
+
+		auto result = ranges::iota<PointXY>(5, initValue);
+		REQUIRE(result[0].index == 1);
+		REQUIRE(result[1].index == 2);
+		REQUIRE(result[2].index == 3);
+		REQUIRE(result[3].index == 4);
+		REQUIRE(result[4].index == 5);
+		REQUIRE(result.size() == 5);
+
+
+	}
+}
+
+
+TEST_CASE("indexed")
+{
+	int xx = 2;
+	auto x = ranges::iota<int>(10);
+}
 
 
 TEST_CASE("ranges from map")

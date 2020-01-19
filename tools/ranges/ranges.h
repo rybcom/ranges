@@ -301,36 +301,6 @@ namespace views
 		std::size_t _initIndex;
 	};
 
-
-	template<class T>
-	struct iota
-	{
-		iota(T const& init_value)
-			:
-			_initValue(init_value)
-		{
-		}
-
-		default_container<T*> operator()(default_container<T*> const&& rng) const
-		{
-			default_container<T*> result_list;
-			result_list.reserve(rng.size());
-
-			T value = _initValue;
-
-			for (T* item : rng)
-			{
-				result_list.push_back(value++);
-			}
-
-			return result_list;
-		}
-
-	private:
-
-		T  _initValue;
-	};
-
 	template<class T>
 	struct count
 	{
@@ -775,7 +745,6 @@ namespace views
 	DECLARE_COLLECTION_CHAINING_OPERATOR(make_view, list<T>)
 	DECLARE_COLLECTION_CHAINING_OPERATOR(make_view_ref, ref_list<T>)
 
-	DECLARE_COLLECTION_CHAINING_OPERATOR(iota, default_container<T*>)
 	DECLARE_COLLECTION_CHAINING_OPERATOR(indexed, default_container<indexed_pair<T>>)
 	DECLARE_COLLECTION_CHAINING_OPERATOR(count, std::size_t)
 	DECLARE_COLLECTION_CHAINING_OPERATOR(count_if, std::size_t)
