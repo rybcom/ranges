@@ -1,14 +1,26 @@
 #pragma once
 #include "ExportHeader.h"
-#include "FamilyMember.h"
 #include <type_traits>
+#include <string>
+#include <vector>
+#include <functional>
+#include <numeric>
+#include <math.h>
+#include <algorithm>
+#include <memory>
+#include <optional>
+#include <xutility>
+
+#include <named_type.h>
+#include <ranges.h>
+
+#include "FamilyMember.h"
 
 class FamilyMember;
 
 using FamilyMemberPtr = std::unique_ptr<FamilyMember>;
 using FamilyMemberRef = std::reference_wrapper<FamilyMember>;
 using FamilyMemberList = std::vector<FamilyMember>;
-using FamilyMemberListRef = std::reference_wrapper<FamilyMemberList>;
 
 
 class FAMILYMANAGER_API Family
@@ -36,12 +48,7 @@ public:
 
 	std::size_t getMemberCount() const;
 	
-	FamilyMemberListRef  getFamilyMemberListRef()
-	{
-		return std::ref(_members);
-	}
-	
-	FamilyMemberList  getFamilyMemberList() ;
+	FamilyMemberList const &  getFamilyMemberList() ;
 
 
 

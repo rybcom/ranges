@@ -1,9 +1,16 @@
 #pragma once
 
 #include "ExportHeader.h"
+#include <string>
 
-using PassportID = types::NamedType<int, struct PassportIDType>;
-using Usefulness = types::NamedType<int, struct UsefulnessType>;
+#define StrongType(name,type) \
+struct name \
+{ \
+	type value; \
+} \
+
+StrongType(PassportID, int);
+StrongType(Usefulness, int);
 
 enum class Sex
 {

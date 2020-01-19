@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include <algorithm>
+#include "Family.h"
 
 namespace
 {
@@ -7,7 +7,7 @@ namespace
 	{
 		return 	[passId](FamilyMember const & mem_a)
 		{
-			return mem_a.getPassportID() == passId.get();
+			return mem_a.getPassportID() == passId.value;
 		};
 	}
 
@@ -108,7 +108,7 @@ std::size_t Family::getMemberCount() const
 }
 
 
-FamilyMemberList Family::getFamilyMemberList()
+FamilyMemberList const & Family::getFamilyMemberList()
 {
 	return _members;
 }

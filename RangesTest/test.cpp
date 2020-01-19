@@ -1,5 +1,8 @@
-#include "pch.h"
 
+#define  GTEST_HAS_TR1_TUPLE  0
+
+#include "gtest/gtest.h"
+#include "Family.h"
 
 bool is_male(FamilyMember const& member) { return member.getSex() == Sex::Male; }
 
@@ -74,7 +77,7 @@ protected:
 
 TEST_F(ViewsOnFamily, any_of)
 {
-	bool result = family.getFamilyMemberListRef().get() | views::any_of<FamilyMember>(
+	bool result = family.getFamilyMemberList() | views::any_of<FamilyMember>(
 		[](FamilyMember const& member)
 		{
 			return  member.getAge() > 50;
@@ -85,7 +88,7 @@ TEST_F(ViewsOnFamily, any_of)
 
 TEST_F(ViewsOnFamily, all_of)
 {
-	bool result = family.getFamilyMemberListRef().get() | views::all_of<FamilyMember>(
+	bool result = family.getFamilyMemberList() | views::all_of<FamilyMember>(
 		[](FamilyMember const& member)
 		{
 			return  member.getSex() == Sex::Male;
@@ -96,7 +99,7 @@ TEST_F(ViewsOnFamily, all_of)
 
 TEST_F(ViewsOnFamily, none_of)
 {
-	bool result = family.getFamilyMemberListRef().get() | views::none_of<FamilyMember>(
+	bool result = family.getFamilyMemberList() | views::none_of<FamilyMember>(
 		[](FamilyMember const& member)
 		{
 			return  member.getSex() == Sex::Female;
@@ -107,20 +110,20 @@ TEST_F(ViewsOnFamily, none_of)
 
 TEST_F(ViewsOnFamily, filter)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::filter(is_crime_score_under_50)
 		| views::transform(transform_familymember_to_string);
 
 
 	EXPECT_EQ(result.size(), 2);
-	EXPECT_TRUE(result[0] == "Emil" || result[1] == "Emil");
-	EXPECT_TRUE(result[0] == "Jonatan" || result[1] == "Jonatan");
+	EXPECT_TRUE(result[0] == "Emil");
+	EXPECT_TRUE(result[1] == "Jonatan");
 
 }
 
 TEST_F(ViewsOnFamily, count)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::filter<FamilyMember>(std::not_fn(is_crime_score_under_50))
 		| views::count<FamilyMember>();
 
@@ -130,7 +133,7 @@ TEST_F(ViewsOnFamily, count)
 
 TEST_F(ViewsOnFamily, count_if)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::count_if<FamilyMember>(std::not_fn(is_crime_score_under_50));
 
 	EXPECT_EQ(result, 3);
@@ -144,10 +147,9 @@ TEST_F(ViewsOnFamily, for_each)
 		member.setSex(Sex::Female);
 	};
 
-	// i prefer use ranges for this rather than views
-	family.getFamilyMemberListRef().get() | views::for_each<FamilyMember>(change_sex_to_female);
+	family.getFamilyMemberList() | views::for_each<FamilyMember>(change_sex_to_female);
 
-	bool result = family.getFamilyMemberListRef().get() | views::all_of<FamilyMember>(
+	bool result = family.getFamilyMemberList() | views::all_of<FamilyMember>(
 		[](FamilyMember const& member)
 		{
 			return  member.getSex() == Sex::Female;
@@ -158,7 +160,7 @@ TEST_F(ViewsOnFamily, for_each)
 
 TEST_F(ViewsOnFamily, min_element)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::min_element<FamilyMember>(compare_by_crime_score);
 
 	EXPECT_EQ(result->getName(), "Emil");
@@ -166,7 +168,7 @@ TEST_F(ViewsOnFamily, min_element)
 
 TEST_F(ViewsOnFamily, max_element)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::max_element(compare_by_crime_score);
 
 	EXPECT_EQ(result->getName(), "Igor");
@@ -174,7 +176,7 @@ TEST_F(ViewsOnFamily, max_element)
 
 TEST_F(ViewsOnFamily, find_if)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::find_if<FamilyMember>([](auto && member)
 			{
 				return member.getPassportID() ==  2175348 ;
@@ -190,7 +192,7 @@ TEST_F(ViewsOnFamily, find)
 	FamilyMember memberToFind;
 	memberToFind.setPassportID(1125342);
 
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::find(memberToFind);
 
 
@@ -199,7 +201,7 @@ TEST_F(ViewsOnFamily, find)
 
 TEST_F(ViewsOnFamily, transform)
 {
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::transform<FamilyMember, std::string>(transform_familymember_to_string);
 
 	EXPECT_EQ(result.size(), 5);
@@ -219,7 +221,7 @@ TEST_F(ViewsOnFamily, zip)
 		return member.getName() + " " + std::to_string(index);
 	};
 
-	auto result = family.getFamilyMemberListRef().get()
+	auto result = family.getFamilyMemberList()
 		| views::zip<FamilyMember, int, std::string>(test_index, zip_func);
 
 	EXPECT_EQ(result.size(), 5);
