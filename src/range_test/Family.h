@@ -1,5 +1,4 @@
 #pragma once
-#include "ExportHeader.h"
 #include <type_traits>
 #include <string>
 #include <vector>
@@ -11,8 +10,7 @@
 #include <optional>
 #include <xutility>
 
-#include <named_type.h>
-#include <ranges.h>
+#include "ranges.h"
 
 #include "FamilyMember.h"
 
@@ -23,7 +21,7 @@ using FamilyMemberRef = std::reference_wrapper<FamilyMember>;
 using FamilyMemberList = std::vector<FamilyMember>;
 
 
-class FAMILYMANAGER_API Family
+class  Family
 {
 
 #pragma region api

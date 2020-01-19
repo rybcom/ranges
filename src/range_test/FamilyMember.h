@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ExportHeader.h"
 #include <string>
 
 #define StrongType(name,type) \
@@ -18,7 +17,7 @@ enum class Sex
 	Female
 };
 
-class FAMILYMANAGER_API FamilyMember
+class FamilyMember
 {
 
 #pragma region api

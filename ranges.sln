@@ -1,54 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "family_manager", "family_manager\family_manager.vcxproj", "{AACAD479-8078-4572-91A7-79DDAA225D19}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{CD5FC089-F157-4E23-9763-0FC37038DB39}"
-	ProjectSection(SolutionItems) = preProject
-		tools\ranges.h = tools\ranges.h
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RangesTest", "RangesTest\RangesTest.vcxproj", "{C7F9A5F1-828D-41AA-AACE-718318472893}"
-	ProjectSection(ProjectDependencies) = postProject
-		{AACAD479-8078-4572-91A7-79DDAA225D19} = {AACAD479-8078-4572-91A7-79DDAA225D19}
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{FA0C1DE9-975B-41BB-853F-1112DC72E9D0}"
+# Visual Studio 15
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "range_test", "intermediate\project_files\range_test.vcxproj", "{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
+		debug|win64 = debug|win64
+		profiler|win64 = profiler|win64
+		release|win64 = release|win64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Debug|x64.ActiveCfg = Debug|x64
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Debug|x64.Build.0 = Debug|x64
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Debug|x86.ActiveCfg = Debug|Win32
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Debug|x86.Build.0 = Debug|Win32
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Release|x64.ActiveCfg = Release|x64
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Release|x64.Build.0 = Release|x64
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Release|x86.ActiveCfg = Release|Win32
-		{AACAD479-8078-4572-91A7-79DDAA225D19}.Release|x86.Build.0 = Release|Win32
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Debug|x64.ActiveCfg = Debug|x64
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Debug|x64.Build.0 = Debug|x64
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Debug|x86.ActiveCfg = Debug|Win32
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Debug|x86.Build.0 = Debug|Win32
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Release|x64.ActiveCfg = Release|x64
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Release|x64.Build.0 = Release|x64
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Release|x86.ActiveCfg = Release|Win32
-		{C7F9A5F1-828D-41AA-AACE-718318472893}.Release|x86.Build.0 = Release|Win32
+		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.debug|win64.ActiveCfg = debug win64|x64
+		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.debug|win64.Build.0 = debug win64|x64
+		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.profiler|win64.ActiveCfg = profiler win64|x64
+		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.profiler|win64.Build.0 = profiler win64|x64
+		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.release|win64.ActiveCfg = release win64|x64
+		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.release|win64.Build.0 = release win64|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C7F9A5F1-828D-41AA-AACE-718318472893} = {FA0C1DE9-975B-41BB-853F-1112DC72E9D0}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {55DE44F1-8F13-4666-9910-B803D21064B8}
 	EndGlobalSection
 EndGlobal
