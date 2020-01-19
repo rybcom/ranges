@@ -6,9 +6,14 @@
 
 # C++ ranges
 
-> views thorught collection 
+	views thorught collection 
 
-> modify collection
+	modify collection
+
+# build
+
+	1.run scripts\generate_solution.bat
+	2.run ranges.sln
 
 ---
 

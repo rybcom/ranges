@@ -478,8 +478,7 @@ namespace views
 		}
 	};
 
-	template<typename T>
-	filter(bool(*)(T const&))->filter<T>;
+
 
 	template<class T>
 	struct for_each
@@ -798,6 +797,25 @@ namespace views
 
 #pragma endregion
 
+#pragma  region c++ 17 template deduction guides
+
+	template<typename T>
+	filter(bool(*)(T const&))->filter<T>;
+
+	template<typename T>
+	for_each(void(*)(T&))->for_each<T>;
+
+	template<typename T>
+	any_of(bool(*)(T const&))->any_of<T>;
+
+	template<typename T>
+	all_of(bool(*)(T const&))->all_of<T>;
+
+	template<typename T>
+	none_of(bool(*)(T const&))->none_of<T>;
+
+#pragma  endregion
+
 }
 
 namespace ranges
@@ -955,6 +973,9 @@ namespace ranges
 
 		return result;
 	}
+
+
+
 }
 
 

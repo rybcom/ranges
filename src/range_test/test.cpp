@@ -9,6 +9,9 @@
 
 bool is_male(FamilyMember const& member) { return member.getSex() == Sex::Male; }
 
+bool is_female(FamilyMember const& member) { return member.getSex() == Sex::Female; }
+
+
 std::function<bool(FamilyMember const&)> is_crime_score_under_50 = [](FamilyMember const& member)
 {
 	return  member.getCrimeScore() < 50;
@@ -67,27 +70,29 @@ TEST_CASE("range testing on family class ")
 				return  member.getAge() > 50;
 			});
 
-		REQUIRE(result == true);
+		result = family.getFamilyMemberList() | views::any_of(is_female);
+
+
+		REQUIRE(result == false);
 	}
 
 	SECTION("all_of")
 	{
-		bool result = family.getFamilyMemberList() | views::all_of<FamilyMember>(
-			[](FamilyMember const& member)
-			{
-				return  member.getSex() == Sex::Male;
-			});
+		bool result = family.getFamilyMemberList() | views::all_of(is_male);
+
+		REQUIRE(result == true);
 	}
 
 	SECTION("none_of")
 	{
-		bool result = family.getFamilyMemberList() | views::none_of<FamilyMember>(
-			[](FamilyMember const& member)
-			{
-				return  member.getSex() == Sex::Female;
-			});
+		bool result = family.getFamilyMemberList() | views::none_of(is_female);
 
 		REQUIRE(result == true);
+
+		result = family.getFamilyMemberList() | views::none_of(is_male);
+
+		REQUIRE(result == false);
+
 	}
 
 	SECTION("filter")
@@ -128,11 +133,10 @@ TEST_CASE("range testing on family class ")
 		};
 
 		family.getFamilyMemberList() | views::for_each<FamilyMember>(change_sex_to_female);
-		bool result = family.getFamilyMemberList() | views::all_of<FamilyMember>(std::not_fn(is_male));
+		bool result = family.getFamilyMemberList() | views::all_of(is_female);
 
 		REQUIRE(result == true);
 	}
-
 
 	SECTION("min_element")
 	{
