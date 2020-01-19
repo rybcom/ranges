@@ -175,42 +175,47 @@ TEST_CASE("range testing on family class ")
 	}
 
 
-}
 
-/*
-
-
-
-
-
-TEST_F(ViewsOnFamily, transform)
-{
-	auto result = family.getFamilyMemberList()
-		| views::transform<FamilyMember, std::string>(transform_familymember_to_string);
-	EXPECT_EQ(result.size(), 5);
-	EXPECT_EQ(result[0], "Emil");
-	EXPECT_EQ(result[1], "Jonatan");
-	EXPECT_EQ(result[2], "Jozo");
-	EXPECT_EQ(result[3], "Tomas");
-	EXPECT_EQ(result[4], "Igor");
-}
-TEST_F(ViewsOnFamily, zip)
-{
-	std::vector<int> test_index = { 10,20,30,40,50 };
-	auto zip_func = [](FamilyMember const& member, int index) -> std::string
+	SECTION("transform")
 	{
-		return member.getName() + " " + std::to_string(index);
-	};
-	auto result = family.getFamilyMemberList()
-		| views::zip<FamilyMember, int, std::string>(test_index, zip_func);
-	EXPECT_EQ(result.size(), 5);
-	EXPECT_EQ(result[0], "Emil 10");
-	EXPECT_EQ(result[1], "Jonatan 20");
-	EXPECT_EQ(result[2], "Jozo 30");
-	EXPECT_EQ(result[3], "Tomas 40");
-	EXPECT_EQ(result[4], "Igor 50");
+		auto result = family.getFamilyMemberList()
+			| views::transform<FamilyMember, std::string>(transform_familymember_to_string);
+
+		REQUIRE(result.size() == 5);
+		REQUIRE(result[0] == "Emil");
+		REQUIRE(result[1] == "Jonatan");
+		REQUIRE(result[2] == "Jozo");
+		REQUIRE(result[3] == "Tomas");
+		REQUIRE(result[4] == "Igor");
+	}
+
+
+	SECTION("zip")
+	{
+		std::vector<int> test_index = { 10,20,30,40,50 };
+
+		auto zip_func = [](FamilyMember const& member, int index) -> std::string
+		{
+			return member.getName() + " " + std::to_string(index);
+		};
+
+		auto result = family.getFamilyMemberList()
+			| views::zip<FamilyMember, int, std::string>(test_index, zip_func);
+
+		REQUIRE(result.size() == 5);
+		REQUIRE(result[0] == "Emil 10");
+		REQUIRE(result[1] == "Jonatan 20");
+		REQUIRE(result[2] == "Jozo 30");
+		REQUIRE(result[3] == "Tomas 40");
+		REQUIRE(result[4] == "Igor 50");
+	}
+
+
 }
-TEST_F(ViewsOnFamily, MapMap)
+
+
+
+TEST_CASE("ranges from map")
 {
 	FamilyMember member;
 	member.setAge(12);
@@ -224,11 +229,15 @@ TEST_F(ViewsOnFamily, MapMap)
 	member2.setPassportID(512324);
 	member2.setSex(Sex::Male);
 	member2.setCrimeScore(66);
+
 	std::map<int, FamilyMember> list = { {165342,member},{512324,member2} };
 	auto result = list | views::filter(is_crime_score_under_50) | views::get_first<FamilyMember>();
-	EXPECT_EQ(result->getName(), "Emil");
+
+	REQUIRE(result->getName() == "Emil");
 }
-TEST_F(ViewsOnFamily, UnorderedMap)
+
+
+TEST_CASE("ranges from unordered map")
 {
 	FamilyMember member;
 	member.setAge(12);
@@ -244,7 +253,9 @@ TEST_F(ViewsOnFamily, UnorderedMap)
 	member2.setCrimeScore(66);
 	std::unordered_map<int, FamilyMember> list = { {165342,member},{512324,member2} };
 	auto result = list | views::filter(is_male) | views::get_first<FamilyMember>();
-	EXPECT_EQ(result->getName(), "Justin");
+
+	REQUIRE(result->getName() == "Justin");
 }
 
-*/
+
+
