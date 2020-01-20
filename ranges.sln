@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "range_test", "intermediate\project_files\range_test.vcxproj", "{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ranges", "intermediate\project_files\ranges.vcxproj", "{A57AE418-911C-0FEF-7AD7-22436618963F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|win64 = debug|win64
@@ -16,6 +18,9 @@ Global
 		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.profiler|win64.Build.0 = profiler win64|x64
 		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.release|win64.ActiveCfg = release win64|x64
 		{F1B31295-DD6B-54E2-4673-2D3E324AEFD2}.release|win64.Build.0 = release win64|x64
+		{A57AE418-911C-0FEF-7AD7-22436618963F}.debug|win64.ActiveCfg = debug win64|x64
+		{A57AE418-911C-0FEF-7AD7-22436618963F}.profiler|win64.ActiveCfg = profiler win64|x64
+		{A57AE418-911C-0FEF-7AD7-22436618963F}.release|win64.ActiveCfg = release win64|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -87,3 +87,21 @@ workspace (solution_name)
 				"tools/catch2",
 			}
 
+		----------------------------------------------
+	  	--										    --
+	  	--					range   			   	--
+	  	--											--
+	  	----------------------------------------------
+
+		project "ranges"
+			location "intermediate/project_files"
+			kind "None"
+			language "C++"
+			cppdialect "C++17"
+		
+			files 
+			{
+				"tools/%{prj.name}/**.h",
+			}
+
+
